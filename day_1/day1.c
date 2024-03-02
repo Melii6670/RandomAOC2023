@@ -3,8 +3,8 @@
 #include "string.h"
 #include "ctype.h"
 
-char NUMSTRINGS[10][7] = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-char DIGITCHARS[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+const char DIGITSTRINGS[10][7] = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+const char DIGITCHARS[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 char getFirstDigitP1(const char* line) {
     int lowerPointer = 0;
@@ -39,12 +39,10 @@ int part1() {
 
         int currentVal = atoi(currentDigits);
 
-        printf("Local Sum = %d\n", currentVal);
         sum += currentVal;
     }
 
-    printf("%d\n", sum);
-    fclose(file);
+    return sum;
 }
 
 char getFirstDigitP2(const char* line) {
@@ -52,12 +50,11 @@ char getFirstDigitP2(const char* line) {
     while (!isdigit(line[lowerPointer]) && lowerPointer < strlen(line)) {
         lowerPointer++;
     }
-
     
     int largestStringDigitPointer = strlen(line);
     int currentStringDigitIndex = 0;
     for (int i = 0; i < 10; i++) {
-        char * numStringLocation = strstr(line , NUMSTRINGS[i]);
+        char * numStringLocation = strstr(line , DIGITSTRINGS[i]);
         if (numStringLocation == NULL) {
             continue;
         }
@@ -78,16 +75,13 @@ char getFirstDigitP2(const char* line) {
 }
 
 char * getPointerToLastStrDigit(const char * line, int digitIndex) {
-    char * numStringLocation = strstr(line , NUMSTRINGS[digitIndex]);
-    char * nextStringLocation = numStringLocation;
-    // printf("-%s\n", nextStringLocation);
-    while (nextStringLocation != NULL) {
-        numStringLocation = nextStringLocation;
-        nextStringLocation = strstr(numStringLocation+sizeof(char), NUMSTRINGS[digitIndex]);
-        // printf("-%s\n", nextStringLocation);
+    char * digitPointer = strstr(line , DIGITSTRINGS[digitIndex]);
+    char * nextDigit = digitPointer;
+    while (nextDigit != NULL) {
+        digitPointer = nextDigit;
+        nextDigit = strstr(digitPointer+sizeof(char), DIGITSTRINGS[digitIndex]);
     } 
-    // printf("\n%s\n\n", numStringLocation);
-    return numStringLocation;
+    return digitPointer;
 }
 
 char getLastDigitP2(const char* line) {
@@ -95,12 +89,10 @@ char getLastDigitP2(const char* line) {
     while (!isdigit(line[upperPointer]) && upperPointer >= 0) {
         upperPointer--; 
     }
-    printf("%d\n", upperPointer);
 
     int largestStringDigitPointer = 0;
     int currentStringDigitIndex = 0;
     for (int i = 0; i < 10; i++) {
-
         char * lastStrDigit = getPointerToLastStrDigit(line, i);
         if (lastStrDigit == NULL) {
             continue;
@@ -113,7 +105,6 @@ char getLastDigitP2(const char* line) {
         }
     }
 
-    printf("%d\n", largestStringDigitPointer);    
     if (largestStringDigitPointer > upperPointer) {
         return DIGITCHARS[currentStringDigitIndex];
     }
@@ -136,18 +127,16 @@ int part2() {
         currentDigits[1] = getLastDigitP2(currentLine);
 
         int currentVal = atoi(currentDigits);
-        printf("first digit = %c, ", currentDigits[0]);
-        printf("second digit = %c, ", currentDigits[1]);
-        printf("Local Sum = %d\n", currentVal);
         sum += currentVal;
     }
 
-    printf("%d\n", sum);
     fclose(file);
+    return sum;
 }
 
 int main() {
-    part1();
-    part2();
+    printf("%d\n", part1());
+    printf("%d\n", part2());
+    return 0;
 }
 
